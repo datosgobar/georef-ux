@@ -1,22 +1,27 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
-import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import type { Coord, GeorefEntity, GeorefResource } from '../api/types'
 import { fetchBoundaries, supportsBoundaries } from '../api/boundaries'
 
-// Vite no resuelve las imágenes por defecto de Leaflet; las seteamos a mano.
-const defaultIcon = L.icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-})
+// Punto de resultado con los colores de Datos Abiertos: navy y violeta.
+const PUNTO: L.CircleMarkerOptions = {
+  radius: 7,
+  color: '#232d4f',
+  weight: 2,
+  fillColor: '#b369ed',
+  fillOpacity: 1,
+}
+
+/**
+ * Encuadre sin la Antártida: el centroide de Tierra del Fuego cae ahí y, si se
+ * incluye, el continente queda diminuto. Solo se recorta cuando hay algo más al norte.
+ */
+function sinAntartida(b: L.LatLngBounds): L.LatLngBounds {
+  const LIMITE = -56
+  if (b.getSouth() >= LIMITE || b.getNorth() < LIMITE) return b
+  return L.latLngBounds([LIMITE, b.getWest()], [b.getNorth(), b.getEast()])
+}
 
 // Centro aproximado de Argentina (vista inicial).
 const ARGENTINA_CENTER: L.LatLngExpression = [-38.4, -63.6]
@@ -93,7 +98,8 @@ export function MapView({ entities, resource, showBoundaries }: Props) {
   // Inicialización del mapa (una vez).
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return
-    const map = L.map(containerRef.current).setView(ARGENTINA_CENTER, 4)
+    // Zoom fraccionario: el país entra ajustado en el encuadre en vez de saltar de a un nivel.
+    const map = L.map(containerRef.current, { zoomSnap: 0.25 }).setView(ARGENTINA_CENTER, 4)
 
     // Basemap IGN Argenmap (capa base oficial de Argentina).
     L.tileLayer(
@@ -136,13 +142,16 @@ export function MapView({ entities, resource, showBoundaries }: Props) {
       if (!c) continue
       const latlng: L.LatLngExpression = [c.lat, c.lon]
       points.push(latlng)
-      L.marker(latlng, { icon: defaultIcon })
+      L.circleMarker(latlng, PUNTO)
         .bindPopup(popupHtml(e), { maxWidth: 280 })
         .addTo(layer)
     }
 
     if (points.length > 0) {
-      map.fitBounds(L.latLngBounds(points), { padding: [30, 30], maxZoom: 13 })
+      map.fitBounds(sinAntartida(L.latLngBounds(points)), {
+        padding: [30, 30],
+        maxZoom: 13,
+      })
     }
   }, [entities])
 
@@ -169,15 +178,15 @@ export function MapView({ entities, resource, showBoundaries }: Props) {
         if (cancelled || !fc || !mapRef.current) return
         const layer = L.geoJSON(fc, {
           style: {
-            color: '#6d3cc0',
+            color: '#393793',
             weight: 2,
-            fillColor: '#8453d6',
+            fillColor: '#b369ed',
             fillOpacity: 0.12,
           },
         }).addTo(map)
         boundaryRef.current = layer
         try {
-          map.fitBounds(layer.getBounds(), { padding: [30, 30] })
+          map.fitBounds(sinAntartida(layer.getBounds()), { padding: [30, 30] })
         } catch {
           /* sin bounds válidos */
         }

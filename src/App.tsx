@@ -63,7 +63,7 @@ export default function App() {
               target="_blank"
               rel="noreferrer"
             >
-              <span aria-hidden="true">↗</span> Referencia de la API
+              Referencia de la API
             </a>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function App() {
               className={view === 'batch' ? 'is-active' : ''}
               onClick={() => setView('batch')}
             >
-              Carga en lote (CSV)
+              Carga en lote
             </button>
           </div>
         </div>
@@ -157,9 +157,8 @@ export default function App() {
         <main className="container app-main-single">
           <section className="panel">
             <div className="panel-head">
-              <span className="dot">★</span>
               <div>
-                <h2 className="panel-title">Carga en lote (CSV)</h2>
+                <h2 className="panel-title">Carga en lote (CSV o Excel)</h2>
                 <p className="panel-sub">
                   Normalizá o georreferenciá una base entera: direcciones,
                   coordenadas o nombres de unidades
@@ -177,14 +176,17 @@ export default function App() {
         <div className="container footer-inner">
           <span className="footer-credit">
             <span className="glyph-mini" aria-hidden="true">
-              <span className="gm" style={{ background: 'var(--ink)' }}></span>
+              <span
+                className="gm"
+                style={{ background: 'var(--lilac-100)' }}
+              ></span>
               <span
                 className="gm"
                 style={{ background: 'var(--violet-300)' }}
               ></span>
               <span
                 className="gm"
-                style={{ background: 'var(--violet-600)' }}
+                style={{ background: 'var(--violet-500)' }}
               ></span>
             </span>
             <span>
