@@ -262,7 +262,7 @@ export function BatchGeocoder() {
             className="btn btn-primary btn-block"
             disabled={running || requiredMissing}
           >
-            {running ? 'Procesando…' : 'Procesar →'}
+            {running ? 'Procesando…' : 'Procesar'}
           </button>
           {requiredMissing && (
             <p className="field-help">

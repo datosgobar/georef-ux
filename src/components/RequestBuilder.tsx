@@ -10,6 +10,7 @@ import {
 import type { FieldDef } from '../api/fields'
 import { fetchCampos } from '../api/campos'
 import { buildSnippets } from '../api/snippets'
+import { CategoryIcon } from './CategoryIcon'
 import type { GeorefResource, QueryParams } from '../api/types'
 
 interface Props {
@@ -318,7 +319,7 @@ export function RequestBuilder({ loading, onSubmit }: Props) {
             onClick={() => changeResource(cat.resources[0])}
           >
             <span className="tab-ico" aria-hidden="true">
-              {cat.icon}
+              <CategoryIcon categoryKey={cat.key} />
             </span>
             {cat.label}
           </button>
@@ -389,7 +390,7 @@ export function RequestBuilder({ loading, onSubmit }: Props) {
         className="btn btn-primary btn-block"
         disabled={loading}
       >
-        {loading ? 'Consultando…' : 'Consultar →'}
+        {loading ? 'Consultando…' : 'Consultar'}
       </button>
 
       <DownloadSection resource={resource} />
