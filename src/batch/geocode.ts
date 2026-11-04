@@ -148,7 +148,8 @@ export async function runBatch(
   // Armar las consultas con los requeridos completos, recordando el índice.
   const sendable: { idx: number; query: Record<string, unknown> }[] = []
   data.rows.forEach((row, idx) => {
-    const query: Record<string, unknown> = { max: 1 }
+    // /ubicacion devuelve un único resultado y rechaza `max` con 400.
+    const query: Record<string, unknown> = endpoint === 'ubicacion' ? {} : { max: 1 }
     let ok = true
     for (const field of operation.fields) {
       const val = valueFor(field, mapping[field.name], row)
