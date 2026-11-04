@@ -78,15 +78,15 @@ const UBICACION_FIELDS: OutputField[] = [
   { path: 'provincia.id', label: 'Provincia (id)' },
   { path: 'departamento.nombre', label: 'Departamento' },
   { path: 'departamento.id', label: 'Departamento (id)' },
-  { path: 'municipio.nombre', label: 'Municipio' },
-  { path: 'municipio.id', label: 'Municipio (id)' },
+  { path: 'gobierno_local.nombre', label: 'Gobierno local' },
+  { path: 'gobierno_local.id', label: 'Gobierno local (id)' },
   { path: 'lat', label: 'Latitud' },
   { path: 'lon', label: 'Longitud' },
 ]
 const UBICACION_DEFAULT = [
   'provincia.nombre',
   'departamento.nombre',
-  'municipio.nombre',
+  'gobierno_local.nombre', // v2.1 devuelve gobierno_local, no municipio
 ]
 
 const TERRITORIAL_FIELDS: OutputField[] = [
